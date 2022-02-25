@@ -1,0 +1,34 @@
+{
+  "name": "talkathon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/timDINOS/talkathon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/timDINOS/talkathon/issues"
+  },
+  "homepage": "https://github.com/timDINOS/talkathon#readme",
+  "devDependencies": {
+    "@types/node": "^17.0.6",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-0": "^6.24.1"
+  },
+  "dependencies": {
+    "apollo-server-express": "^3.6.1",
+    "express": "^4.17.2",
+    "graphql": "^16.2.0",
+    "mongodb": "^4.2.2",
+    "mongoose": "^6.1.4",
+    "nodemon": "^2.0.15",
+    "react": "^17.0.2"
+  }
+}

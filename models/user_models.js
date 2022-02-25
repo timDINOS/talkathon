@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 
-export const userSchema = new moongoose.Schema({
+export const userSchema = new mongoose.Schema({
     first_name: {
         type: String
     },
