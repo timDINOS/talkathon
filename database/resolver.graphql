@@ -2,7 +2,7 @@ import {Users, Posts} from '../database/dbsetup.js'
 
 
 type query {
-
+    fetchUser(username: String): 
 }
 
 type mutation {
@@ -10,16 +10,21 @@ type mutation {
 }
 
 type User {
-    first_name:
-    last_name:
-    email:
-    username:
-    
+    first_name: String
+    last_name: String
+    email: String
+    username: String
+    age: Int
 }
 
 type Post {
-
+    title: String
+    username: String
+    date: timestamptz
+    description: String
+    zoom_link: String
 }
+
 
 query queryUsers {
 }
