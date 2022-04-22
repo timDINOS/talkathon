@@ -1,42 +1,213 @@
-import {Users, Posts} from '../database/dbsetup.js'
+import {Users, Posts} from '../database/dbsetup.js';
+import {gpl} from 'apollo-server-express';
+
+export const typedefs = gpl`
+    type query {
+        fetchUser: User
+        fetchFollowers(uname: String): [Users]
+        fetchPosts(uname: String, post_id: ID): [Post]
+    }
+
+    type SubmittedUser {
+        first_name: String
+        last_name: String
+        email: String
+        username: String
+        password: String
+        age: Int
+        posts: [Post]
+        followers: [User]
+    }
+
+    type SubmittedPost {
+        title: String
+        username: String
+        date: timestamptz
+        description: String
+        zoom_link: String
+        id: ID
+        followers: [User]
+    }
 
 
-type query {
-    fetchUser(username: String): 
-}
+    type mutation {
+        createUser(inputUser: SubmittedUser): User
+        createPost(inputPost: SubmittedPost): Post
+        updateUser(uname: String, ): User
+        updatePost(id: ID): Post
+        addUserFollower(newFollower: SubmittedUser): User
+        addUserPost(newPost: SubmittedPost): Post
+        addPostFollower(newFollower: SubmittedUser): User
+    }
 
-type mutation {
+    type User {
+        first_name: String
+        last_name: String
+        email: String
+        username: String
+        password: String
+        age: Int
+        posts: [Post]
+        followers: [User]
+    }
 
-}
+    type Post {
+        title: String
+        username: String
+        date: timestamptz
+        description: String
+        zoom_link: String
+        id: ID
+        followers: [User]
+    }
 
-type User {
-    first_name: String
-    last_name: String
-    email: String
-    username: String
-    age: Int
-}
-
-type Post {
-    title: String
-    username: String
-    date: timestamptz
-    description: String
-    zoom_link: String
-}
+`;
 
 
-query queryUsers {
-}
+export const resolvers = {
+    Query:{
+        fetchUser(root) => {
+            return new Promise((resolve, reject) => {
+                Users.find((err, users) => {
+                    if (err) reject(err)
+                    else resolve(users)
+                })
+            })
+        },
+        fetchFollowers(root, {uname}) => {
+            return new Promise((resolve, reject) => {
+                Users.findOne({username: uname, (err, followers) => {
+                    if (err) reject(err);
+                    else resolve(followers);
+                })
+            })
+          }
+        },
+        fetchPosts(root, {uname}, {post_id}) => {
+            return new Promise((resolve, reject) => {
+                Users.findOne({username: uname}, {id: post_id}, (err, posts) => {
+                    if (err) reject(err);
+                    else resolve(posts);
+                })
+            })
+          }
+        }
+    },
+    Mutation:{
+        updateUser(root) => {
+        },
+        updatePost(root) => {
+        },
+        createUser(root, {inputUser}) => {
+            const newUser = new User({
+                newUser.first_name: inputUser.first_name,
+                newUser.last_name: inputUser.last_name,
+                newUser.username: inputUser.last_name,
+                newUser.password: inputUser.password,
+                newUser.age: inputUser.age,
+                newUser.email: inputUser.email,
+            });
 
-query mutationUsers {
-}
+            return new Promise((reject, resolve) => {
+                newUser.save((err) => {
+                    if (err) reject(err);
+                    else resolve(newUser);
+                })
+            })
+        },
+        createPost(root, {inputPost}) => {
+            const newPost = new Post({
+                newPost.title: inputPost.title,
+                newPost.username: inputPost.username,
+                newPost.date: inputPost.date,
+                newPost.description: inputPost.description,
+                newPost.zoom_link: inputPost.zoom_link
+            });
 
-mutation queryPosts {
+            newPost.id = inputPost.id
 
-}
+            return new Promise((reject, resolve) => {
+                newPost.save((err) => {
+                    if (err) reject(err);
+                    else resolve(newPost);
+                })
+            })
+        },
+        addUserPost(root, {selectedUser}, {selectedPost}) => {
+             const newPost = new Post({
+                newPost.title: selectedPost.title,
+                newPost.username: selectedPost.username,
+                newPost.date: selectedPost.date,
+                newPost.description: selectedPost.description,
+                newPost.zoom_link: selectedPost.zoom_link
+                newPost.followers: selectedPost.followers
+            });
 
-mutation mutationPosts {
+            Users.update(
+                {username: newUser.username},
+                {$push: {Posts: {
+                     title: newUser.title,
+                     username: newUser.username,
+                     date: newUser.date,
+                     description: newUser.description,
+                     zoom_link: newUser.zoom_link,
+                     followers: newUser.followers,
+                     id: newUser.id
+                }}
+            )
+        },
+        addUserFollower(root, {inputUser}) => {
+             const newUser = new User({
+                newUser.first_name: inputUser.first_name,
+                newUser.last_name: inputUser.last_name,
+                newUser.username: inputUser.last_name,
+                newUser.password: inputUser.password,
+                newUser.age: inputUser.age,
+                newUser.email: inputUser.email,
+                newUser.followers: inputUser.followers,
+                newUser.posts: inputUser.posts
+            });
 
-}
+            Users.update(
+                {username: newUser.username},
+                {$push: {followers: {
+                     first_name: newUser.first_name,
+                     last_name: newUser.last_name,
+                     username: newUser.username,
+                     password: newUser.password,
+                     age: newUser.age,
+                     email: newUser.email,
+                     followers: newUser.followers,
+                     posts: newUser.posts
+                }}
+            )
+        },
+        addPostFollower(root, {inputUser}, {givenID}) => {
+            const newUser = new User({
+                newUser.first_name: inputUser.first_name,
+                newUser.last_name: inputUser.last_name,
+                newUser.username: inputUser.last_name,
+                newUser.password: inputUser.password,
+                newUser.age: inputUser.age,
+                newUser.email: inputUser.email,
+                newUser.followers: inputUser.followers,
+                newUser.posts: inputUser.posts
+            });
+
+            Posts.update(
+                {id: givenID},
+                {$push: {followers: {
+                     first_name: newUser.first_name,
+                     last_name: newUser.last_name,
+                     username: newUser.username,
+                     password: newUser.password,
+                     age: newUser.age,
+                     email: newUser.email,
+                     followers: newUser.followers,
+                     posts: newUser.posts
+                }}
+            )
+        }
+    } 
+};
 

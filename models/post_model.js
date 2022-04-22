@@ -5,7 +5,7 @@ export const userSchema = new mongoose.Schema({
     title: {
         type: String,
     },
-    user: {
+    username: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
@@ -17,5 +17,8 @@ export const userSchema = new mongoose.Schema({
     },
     zoom_link: {
         type: URL,
+    },
+    followers: {
+        type: Array,
     }
 });
