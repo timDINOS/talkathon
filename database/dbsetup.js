@@ -2,9 +2,8 @@ const mongoose = require('mongoose');
 
 const { userSchema } = require('../models/user_models.js');
 const { postSchema } = require('../models/post_models.js');
-const {environment } = require('../config/app_config');
 
-mongoose.connect(environment[process.env.NODE_ENV || "development"].dbString, {
+mongoose.connect(key.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });

@@ -1,12 +1,14 @@
-import express from 'express'
-import { ApolloServer } from 'apollo-server-express'
-import {typedefs, resolvers } from '../database/resolver.graphql'
-import { PORT } from '../config/app_config'
+require('dotenv').config();
+express = require('express');
+ApolloServer = require('apollo-server-express');
+import typedefs from 'resolver.graphql';
+import resolvers from 'resolver.graphql';
 
 
-const running_server = new ApolloServer({typedefs, resolvers});
+
+const running_server = new ApolloServer({typedefs, resolvers, playground: true});
 const app = express();
-
-app.get('/', (request, response) => {});
+running_server.start();
+running_server.applyMiddleware('/graphql', app)
 
 app.listen({port: PORT}, () => {});

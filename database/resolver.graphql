@@ -1,7 +1,7 @@
 import {Users, Posts} from '../database/dbsetup.js';
 import {gpl} from 'apollo-server-express';
 
-export const typedefs = gpl`
+const typedefs = gpl`
     type query {
         fetchUser: User
         fetchFollowers(uname: String): [Users]
@@ -64,7 +64,7 @@ export const typedefs = gpl`
 `;
 
 
-export const resolvers = {
+const resolvers = {
     Query:{
         fetchUser(root) => {
             return new Promise((resolve, reject) => {
@@ -81,7 +81,6 @@ export const resolvers = {
                     else resolve(followers);
                 })
             })
-          }
         },
         fetchPosts(root, {uname}, {post_id}) => {
             return new Promise((resolve, reject) => {
@@ -91,12 +90,24 @@ export const resolvers = {
                 })
             })
           }
-        }
-    },
-    Mutation:{
-        updateUser(root) => {
         },
-        updatePost(root) => {
+    Mutation:{
+        updateUser(root, {newInfo}, {givenId}) => {
+            const newUser = new User({
+                newUser.first_name: newInfo.first_name,
+                newUser.last_name: newInfo.last_name,
+                newUser.username: newInfo.last_name,
+                newUser.password: newInfo.password,
+                newUser.age: newInfo.age,
+                newUser.email: newInfo.email,
+            });
+
+            Users.update(
+                {id: givenId},
+                
+            )
+        },
+        updatePost(root, {newInfo}, {givenId}) => {
         },
         createUser(root, {inputUser}) => {
             const newUser = new User({
@@ -210,4 +221,6 @@ export const resolvers = {
         }
     } 
 };
+
+export {typedefs, resolvers}
 
