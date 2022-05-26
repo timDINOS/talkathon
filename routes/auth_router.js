@@ -1,10 +1,15 @@
 const router  = require('express').Router()
+const login = 0
+const register = 0
+const changedPass = 0
+const logout = 0
 
-router.get('/', )
+router.post('/register', register);
 
-router.get('/register', )
+router.post('/login', login);
 
-router.get('/login', )
+router.post('/changePassword', changedPass);
 
+router.delete('/login', logout);
 
 module.exports = router
