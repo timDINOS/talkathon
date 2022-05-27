@@ -3,7 +3,8 @@ import {gpl} from 'apollo-server-express';
 
 const typedefs = gpl`
     type query {
-        fetchUser: User
+        fetchAllUsers: [Users]
+        fetchUser(uname: String): User
         fetchFollowers(uname: String): [Users]
         fetchPosts(uname: String, post_id: ID): [Post]
     }
@@ -66,17 +67,25 @@ const typedefs = gpl`
 
 const resolvers = {
     Query:{
-        fetchUser(root) => {
-            return new Promise((resolve, reject) => {
-                Users.find((err, users) => {
+        fetchAllUsers(root) => {
+            return newPromise((resolve, reject) => {
+                Users.find({}, (err, users) => {
                     if (err) reject(err)
                     else resolve(users)
                 })
             })
         },
+        fetchUser(root, {uname}) => {
+            return new Promise((resolve, reject) => {
+                Users.findOne(username: uname, (err, user) => {
+                    if (err) reject(err)
+                    else resolve(user)
+                })
+            })
+        },
         fetchFollowers(root, {uname}) => {
             return new Promise((resolve, reject) => {
-                Users.findOne({username: uname, (err, followers) => {
+                Users.find(username: uname, (err, followers) => {
                     if (err) reject(err);
                     else resolve(followers);
                 })
@@ -84,7 +93,7 @@ const resolvers = {
         },
         fetchPosts(root, {uname}, {post_id}) => {
             return new Promise((resolve, reject) => {
-                Users.findOne({username: uname}, {id: post_id}, (err, posts) => {
+                Users.find({username: uname}, {id: post_id}, (err, posts) => {
                     if (err) reject(err);
                     else resolve(posts);
                 })
