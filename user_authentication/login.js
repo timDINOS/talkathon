@@ -2,6 +2,16 @@
 const { rejects } = require("assert");
 const axios = require("axios");
 const session = require("../server");
+const bcrypt = require('bcrypt');
+
+
+let hashPassword = (password, callback) => {
+    
+}
+
+let checkPasswords = (storedPassword, typedPassword, callback) => {
+
+}
 
 let login = (req, res) => {
     let givenPassword;
@@ -23,8 +33,8 @@ let login = (req, res) => {
         reject(err);
     });
 
-    if (givenPassword != req.body.password) {
-        
+    if (!checkPasswords) {
+
     }
     else {
         session = req.session;

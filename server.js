@@ -11,13 +11,18 @@ var session;
 
 app.use(cookies());
 
-app.use(sessions());
+app.use(sessions({
+    secret: 'mySecretKey',
+    saveUninitialized: true,
+    resave: false,
+    cookie: {secure: true}
+}));
 
 app.get('/', (req, res) => {
     res.sendFile("homepage.html");
 });
 
-app.use('/routes', login_router);
+app.use('/auth_router', login_router);
 
 
 
