@@ -68,7 +68,7 @@ const typedefs = gpl`
 const resolvers = {
     Query:{
         fetchAllUsers(root) => {
-            return newPromise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Users.find({}, (err, users) => {
                     if (err) reject(err)
                     else resolve(users)
