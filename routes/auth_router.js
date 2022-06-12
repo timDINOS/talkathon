@@ -1,8 +1,8 @@
 const router  = require('express').Router()
-const login = 0
-const register = 0
-const changedPass = 0
-const logout = 0
+const login = require('../user_authentication/login');
+const register = require('../user_authentication/register');
+const changedPass = require('../user_authentication/changedPassword');
+const logout = require('../user_authentication/logout');
 
 router.post('/register', register);
 

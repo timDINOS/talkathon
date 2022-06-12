@@ -6,8 +6,6 @@ const bcrypt = require('bcrypt');
 
 
 
-
-
 let hashPassword = (password, callback) => {
     bcrypt.genSalt(10, function(err, salt) {
         if (err != null) return callback(err);
@@ -28,7 +26,7 @@ let checkPasswords = (storedPassword, typedPassword, callback) => {
 }
 
 let login = (req, res) => {
-    let givenPassword;
+    var givenPassword;
     axios({
         method: 'get',
         url: '', 
@@ -43,18 +41,28 @@ let login = (req, res) => {
         }
     }).then((result) => {
         givenPassword = result.data
-        hashPassword(givenPassword);
+        hashPassword(givenPassword, function(error, hash=null) {
+            if (error) {
+                return rejects(error);
+            }
+            return hash
+        });
     }).catch(err => {
         rejects(err);
     });
 
-    if (!checkPasswords(givenPassword, res.body.password)) {
-        
-    }
-    else {
+    var errMatches = checkPasswords(givenPassword, res.body.password, function(error, matched=false) {
+        if (error) {
+            return rejects(error);
+        }
+
+        return matched;
+    });
+    if (errMatches) {
         session = req.session;
         session.user = req.body.username;
         res.send(req.body.username + "Successfully logged in!");
+        res.redirect('/templates/homepage');
     }
 }
 
