@@ -6,7 +6,7 @@ const typedefs = gpl`
         fetchAllUsers: [Users]
         fetchUser(uname: String): User
         fetchFollowers(uname: String): [Users]
-        fetchPosts(uname: String, post_id: ID): [Post]
+        fetchPosts(uname: String): [Post]
     }
 
     type SubmittedUser {
@@ -124,6 +124,16 @@ const resolvers = {
             );
         },
         updatePost(root, {newInfo}, {givenId}) => {
+            Posts.update({id: givenId}, 
+            {$set, {
+                title = newInfo.title,
+                username: newInfo.username,
+                date: newInfo.date,
+                description: newInfo.description,
+                zoom_link: newInfo.zoom_link
+            }}
+
+            );
         },
         createUser(root, {inputUser}) => {
             const newUser = new User({

@@ -36,7 +36,59 @@ const getAllPosts = function(req, res) {
     return res.json(all_posts);
 }
 
+const addFollower = function(req, res) {
+    var newfollower = {}
+    axios({
+        url: '',
+        method: 'Get',
+        data: {
+            query: `
+                query fetchUser(uname: ${req.body.follower_username}) {
+                    User
+                }
+            `
+        }
+    }).then((follower) => {
+        newfollower.first_name = follower.first_name;
+        newfollower.last_name = follower.last_name;
+        newfollower.age = follower.age;
+        newfollower.email = follower.email;
+        newfollower.username = follower.username;
+        newfollower.password = '';
+        newfollower.users = follower.users;
+        newfollower.posts = follower.posts;
+
+    }).catch((err) => {rejects(err); });
+
+
+    axios({
+        url: '',
+        method: 'POST',
+        data: {
+            mutation: `
+                mutation addUserFollower(inputUser: ${newfollower}) {
+                    User
+                }
+            `
+        }
+    }).then((addedUser) => {
+        res.status(200); 
+        res.send(addedUser); 
+    }).catch(err => {rejects(err); });
+}
+
+const addPost = function(req, res) {
+    return 0;
+}
+
+const unfollowUser = function(req, res) {
+    return 0;
+}
+
+const unfollowPost = function(req, res) {
+    return 0;
+}
 
 
 
-module.exports = {getAllPosts, getAllfollowers};
+module.exports = {getAllPosts, getAllfollowers, addFollower, addPost, unfollowPost, unfollowUser};
